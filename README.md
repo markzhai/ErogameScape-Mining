@@ -6,14 +6,15 @@ A spider and data-mining project on ErogameScape
 Redis
 -----
 How data stores in redis:
-	game_id -> game_title
-	game_id -> brand_id
-	brand_id -> brand_name
-	uid:game_id:netabara -> 0 or 1
-	uid:game_id:comment_short -> string......
-	uid:game_id:playtime ->
-	uid:game_id:comment_data ->
-	uid:game_id:score ->
+
+1. game_id -> game_title
+2. game_id -> brand_id
+3. brand_id -> brand_name
+4. uid:game_id:netabara -> 0 or 1
+5. uid:game_id:comment_short -> string......
+6. uid:game_id:playtime ->
+7. uid:game_id:comment_data ->
+8. uid:game_id:score ->
 	
 Spider
 ------
