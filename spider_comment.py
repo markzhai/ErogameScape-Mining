@@ -4,12 +4,12 @@
 多线程抓取网页
 """
 
-import gzip
 from urllib import request as urllib2
+from pyquery import PyQuery as pq
 
 import threading
-
-from pyquery import PyQuery as pq
+import gzip
+import reposity
 
 threads = []
 web_site_url = "http://erogamescape.dyndns.org/~ap2/ero/toukei_kaiseki/comment.php"
@@ -56,6 +56,8 @@ def parse_html(i, element):
         else:
             date_str = pq_element("p.footer1").text()
 
+    game_id = user_link.split("game=")[1].split("#title")[0].strip()
+    reposity.save_game(game_id, game_title)
     if (date_str) :
         date_str = date_str.split(" ")[0].strip()
     print("%s\t%s\t%s\t%s" % (score, game_title, date_str, user_name))
@@ -73,7 +75,6 @@ def gzip_decode_content(doc=""):
     """
     根据URL返回内容，有些页面可能需要 gzip 解压缩
     """
-
     try:
         html = gzip.decompress(doc).decode("utf-8") #decode
     except:
