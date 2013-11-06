@@ -5,10 +5,11 @@ A spider and data-mining project on ErogameScape.
 
 Plan
 ----
-1. Find hidden tags.
-2. User recommendations.
-3. Game recommendations.
-4. 
+* X[] Find hidden tags.
+    * [o] Grab comments.
+    * [X] Grab game pov.
+* [X] User recommendations.
+* [X] Game recommendations.
 
 Redis
 -----
@@ -47,9 +48,8 @@ How data stores in redis:
 
 Spider
 ------
-erogame.py
-
-To set up other 
+* spider_comment.py - Grab user comments including score, playtime, comment text, etc.
+* spider_game.py - Grab game pov.
 
 Versioning
 ----------
