@@ -48,8 +48,8 @@ How data stores in redis:
 
 Spider
 ------
-* spider_comment.py - Grab user comments including score, playtime, comment text, etc.
-* spider_game.py - Grab game pov.
+* spider_comment.py - grab user comments including score, playtime, comment text, etc.
+* spider_game.py - grab game pov.
 
 Versioning
 ----------
