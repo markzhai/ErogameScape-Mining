@@ -1,14 +1,25 @@
-# reposity-redis.py
-"""Defines reposity functions."""
+#!/usr/bin/python
+"""
+Defines reposity functions.
+"""
 
 import redis
 import itertools
 
 r = redis.StrictRedis(host='localhost', port=6379, db=0)
 
-def save_game(id, title):
-	#set(self, name, value, ex=None, px=None, nx=False, xx=False)
-	r.set(id, title, None, None, True, False)
+def save_game_info(game_id, title, brand_id):
+  r.hmset('game:%s' % game_id, {'title':title, 'brand_id':brand_id})
+
+def save_game_pov(game_id, *args):
+  pipe = r.pipeline() 
+  for i in range(0, len(args), 2):
+    pipe.sadd('%s:pov' % game_id, args[i])
+    pipe.hset('game:%s' % game_id, 'pov%s' % args[i], args[i+1])
+  pipe.execute()
+
+def save_brand(id, name):
+  r.set('brand:%s' % id, name)
 
 def map_reduce(i,mapper,reducer):
   intermediate = []
@@ -20,3 +31,7 @@ def map_reduce(i,mapper,reducer):
     groups[key] = list([y for x, y in group])
   return [reducer(intermediate_key,groups[intermediate_key])
           for intermediate_key in groups]
+
+save_game_info(0, 'true tears', 0)
+save_game_pov(0, '52', 1, '36', 222)
+save_brand(0, 'key')
