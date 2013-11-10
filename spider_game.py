@@ -1,13 +1,13 @@
 #!/usr/bin/python
 # -*- coding:utf-8 -*- 
 """
-多线程抓取网页
+A multiprocessing Spider
 http://www.pythonclub.org/python-network-application/observer-spider
 http://blog.csdn.net/xihuanqiqi/article/details/11579853
 """
 
 import urllib.request
-from pyquery import PyQuery as pq
+from pyquery import PyQuery
 
 import multiprocessing
 import gzip
@@ -32,39 +32,34 @@ def get_game_info(id, url):
     #fp = open("spider-game.html", "wb")
     #fp.write(bytes(feed_data, 'UTF-8'))
     #fp.close()
-    data = pq(feed_data)
+    data = PyQuery(feed_data)
     if data :
-        parse_html(data("table#att_pov_table"))
+        parse_pov_table(data("table#att_pov_table"))
     return id
 
-def parse_html(element):
-    pq_element = pq(element)
-
-    row = 1
-    th_query = 'th:eq(%d)' % row
-    td_query = 'td:eq(%d)' % row
-
-    attribute = pq_element(th_query).text()
-    contents = pq_element(td_query).text()
-    while attribute:
-        if attribute == '傾向':
-            print(contents)
-            elements = re.split(',', contents)
-            for item in elements:
-                str = item.strip().split(' ')
+def parse_pov_table(table):
+    pq_element = PyQuery(table)
+    #row = 1
+    #th_query = 'th:eq(%d)' % row
+    #td_query = 'td:eq(%d)' % row
+    #http://pythonhosted.org/pyquery/api.html#pyquery.pyquery.PyQuery.items
+    for row in table.items('tr'):
+        if row('th').text() == '傾向':
+            tuples = row('td').text().split(' , ')
+            #links = row('td a:eq(1)').attr('href')
+            #print(links)
+            for (offset, tuple) in enumerate(tuples):
+            #for tuple in tuples:
+                str = tuple.strip().split(' ')
                 zokusei = str[0]
                 if len(str) > 1:
                     number = int(re.split('(\d+)', str[1])[1])
                 else:
                     number = 1
-                print(zokusei + ": %d" % number)
-        row += 1
-        th_query = 'th:eq(%d)' % row
-        td_query = 'td:eq(%d)' % row
-        attribute = pq_element(th_query).text()
-        contents = pq_element(td_query).text()
+                pov_id = int(row("td a:eq(%d)" % offset).attr('href').split('#pov')[1])
+                print(zokusei + "(%d): %d" % (pov_id, number))
 
-def gzip_decode_content(doc=""):
+def gzip_decode_content(doc = ""):
     try:
         html = gzip.decompress(doc).decode("utf-8") #decode
     except:
@@ -72,12 +67,13 @@ def gzip_decode_content(doc=""):
     return html
 
 def main():
+    get_game_info(7062, url)
     pool = multiprocessing.Pool(processes=4)
     result = []
-    for i in range(7062, 7063):
-        result.append(pool.apply_async(get_game_info, (i, url, )))
-    pool.close()
-    pool.join()
+    #for i in range(7062, 7063):
+        #result.append(pool.apply_async(get_game_info, (i, url, )))
+    #pool.close()
+    #pool.join()
     #for res in result:
         #print(res.get())
 
