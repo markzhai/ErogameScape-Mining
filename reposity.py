@@ -19,7 +19,13 @@ def save_game_pov(game_id, *args):
   pipe.execute()
 
 def save_brand(id, name):
-  r.set('brand:%s' % id, name)
+  r.setnx('brand:%s' % id, name)
+
+def get_game_pov(game_id):
+  return r.smembers('%s:pov' % game_id)
+
+def get_game_pov_cnt(game_id, pov_id):
+  return r.hget('game:%s' % game_id, 'pov%s' % pov_id)
 
 def map_reduce(i,mapper,reducer):
   intermediate = []
@@ -35,3 +41,5 @@ def map_reduce(i,mapper,reducer):
 save_game_info(0, 'true tears', 0)
 save_game_pov(0, '52', 1, '36', 222)
 save_brand(0, 'key')
+print(get_game_pov(0))
+print(get_game_pov_cnt(0, 36))
